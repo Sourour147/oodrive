@@ -1,17 +1,42 @@
 <div class="clearfix mb-5">
-  <button class="btn btn-primary float-right" (click)="open(mymodal)">Add</button>
+  <button class="btn btn-primary float-right"(click)="open(mymodal)">Add</button>
+  <button class="btn btn-primary float-left"(click)="open(mymodal)">Add File</button>
+  
 </div>
 
 <ul class="list-group">
     <li class="list-group-item" *ngFor="let item of items">
       {{item.name}}
+    <div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-outline-secondary"(click)="delete(item)">Delete</button>
+    <button class="btn btn-outline-primary"(click)="open(mymodal,item)">Edit</button>
+  </div>
+
+    <!-- ModalEdit -->
+    <ng-template #mymodal let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Edit </h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <form #editForm="ngForm" (ngSubmit)="rename(editForm)">
+      <div class="form-group">
+        <label for="name">New name</label>
+        <input type="text" name="name" ngModel #name="ngModel" class="form-control" required>
+      </div>
+        <button class="btn btn-success">Edit</button>
+        </form>
+      </div>
+    </ng-template>
     </li>
 </ul>
 
-<!-- Modal -->
+<!-- ModalAddFolder -->
 <ng-template #mymodal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Bootstrap Modal</h4>
+    <h4 class="modal-title" id="modal-basic-title">Add Folder </h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">×</span>
     </button>
@@ -26,3 +51,8 @@
     </form>
   </div>
 </ng-template>
+
+
+    
+  
+

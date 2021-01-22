@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 		HttpClientModule,
 		FormsModule,
 		NgbModule,
+		
 	],
 	declarations: [
 		AppComponent,

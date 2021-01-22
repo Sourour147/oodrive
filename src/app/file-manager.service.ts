@@ -17,4 +17,15 @@ export class FileManagerService {
   createFolder(data: any) {
     return this.httpClient.post(this.baseurl, data);
   }
+
+  delete(id: string) {
+		return this.httpClient.delete(`${this.baseurl}/${id}`);
+	}
+  
+  edit(id: string, data: any) {
+    return this.httpClient.patch(`${this.baseurl}/${id}`, data);
+  }
+
+
+
 }

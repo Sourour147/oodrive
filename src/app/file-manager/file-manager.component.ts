@@ -23,7 +23,19 @@ export class FileManagerComponent implements OnInit {
     )
   }
 
-  handleFolderCreated(newFolder: any) {
+  handleCreatedFolder(newFolder: any) {
     this.items.push(newFolder);
   }
-}
+
+  handleFolderDeleted(item: any) {
+		const index = this.items.indexOf(item);
+		this.items.splice(index, 1);
+		this.getFolderContent();
+     }
+
+  handleupdated($event:any){
+    const index = this.items.findIndex((item:any) => item.id === $event.id);
+    this.items[index] = $event;
+     }
+    }
+ 
