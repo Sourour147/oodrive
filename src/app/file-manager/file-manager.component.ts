@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FileManagerService } from '../file-manager.service';
 
 @Component({
@@ -8,15 +9,22 @@ import { FileManagerService } from '../file-manager.service';
 })
 export class FileManagerComponent implements OnInit {
   items: any;
+  folderId: any;
 
-  constructor(private fileManagerService: FileManagerService) { }
+  constructor(private fileManagerService: FileManagerService, private route : ActivatedRoute) { }
 
   ngOnInit() {
-    this.getFolderContent();
+    this.route.paramMap.subscribe(params => {
+      if (params.get('id')) {
+        this.folderId = params.get('id');
+      }
+
+      this.getFolderContent();
+    });
   }
 
   getFolderContent() {
-    this.fileManagerService.getFolderContent().subscribe(
+    this.fileManagerService.getFolderContent(this.folderId).subscribe(
       (response: any) => {
         this.items = response.items;
       }
@@ -36,6 +44,13 @@ export class FileManagerComponent implements OnInit {
   handleupdated($event:any){
     const index = this.items.findIndex((item:any) => item.id === $event.id);
     this.items[index] = $event;
+     }
+     
+     
+     handleaddFile(item: any) {
+      const newArray = [...this.items, ...item];
+      this.items = newArray;
+      this.getFolderContent();
      }
     }
  

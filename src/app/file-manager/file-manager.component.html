@@ -1,8 +1,10 @@
 <div class="container p-5">
     <fl-folder-content
-     [items]="items" 
+     [items]="items"
+     [folderId]="folderId"
      (CreatedFolder)="handleCreatedFolder($event)"
      (folderDeleted)="handleFolderDeleted($event)"
-     (updated)="handleupdated($event)">
+     (updated)="handleupdated($event)"
+     (addFile)="handleaddFile($event)">
     </fl-folder-content>
 </div>

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { FileManagerService } from '../file-manager.service';
 
@@ -11,12 +12,15 @@ import { FileManagerService } from '../file-manager.service';
 export class FolderContentComponent implements OnInit {
   dataItem:any;
   @Input('items') items: any;
+  @Input('folderId') folderId: any;
   @Output() CreatedFolder = new EventEmitter();
   @Output() folderDeleted = new EventEmitter();
   @Output() updated = new EventEmitter();
+  @Output() addFile = new EventEmitter();
   closeResult: string;
+  files: File[] = [];
 
-  constructor(private modalService: NgbModal, private fileManagerService: FileManagerService) { }
+  constructor(private modalService: NgbModal, private fileManagerService: FileManagerService,  private route: Router) { }
 
   ngOnInit() {
     
@@ -29,7 +33,7 @@ export class FolderContentComponent implements OnInit {
       name: form.value.name
     };
 
-    this.fileManagerService.createFolder(data).subscribe(
+    this.fileManagerService.createFolder(data, this.folderId).subscribe(
       (response: any) => {
         this.CreatedFolder.emit(response);
       }
@@ -53,6 +57,9 @@ export class FolderContentComponent implements OnInit {
         },
       );}
   
+  goTo(folderId: any) {
+    this.route.navigate(['', folderId]);
+  }
 
   //Modal
   open(content: any,item?:any) {
@@ -74,5 +81,28 @@ export class FolderContentComponent implements OnInit {
     } else {
       return  `with: ${reason}`;
     }
+  }
+
+  onSelect(event: any) {
+    this.files.push(...event.addedFiles);
+
+    const formData = new FormData();
+
+    for (var i = 0; i < this.files.length; i++) { 
+      formData.append("file[]", this.files[i]);
+    }
+
+    // formData.append('parentId', this.currentFolder);
+
+    this.fileManagerService.upload(formData, this.folderId).subscribe((response: any) => {
+      console.log('sent', response);
+  this.addFile.emit(response.items);
+        this.files = [];
+      
+    });
+  }
+
+  onRemove(event: any) {
+    this.files.splice(this.files.indexOf(event), 1);
   }
 }

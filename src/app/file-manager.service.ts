@@ -10,12 +10,24 @@ export class FileManagerService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getFolderContent() {
-    return this.httpClient.get(this.baseurl);
+  getFolderContent(id?:any) {
+    let url = this.baseurl;
+
+    if (id) {
+      url += "?parentId=" + id;
+    }
+
+    return this.httpClient.get(url);
   }
 
-  createFolder(data: any) {
-    return this.httpClient.post(this.baseurl, data);
+  createFolder(data: any, id?:any) {
+    let url = this.baseurl;
+
+    if (id) {
+      url += "?parentId=" + id;
+    }
+
+    return this.httpClient.post(url, data);
   }
 
   delete(id: string) {
@@ -26,6 +38,13 @@ export class FileManagerService {
     return this.httpClient.patch(`${this.baseurl}/${id}`, data);
   }
 
+  upload(files: any, id?:any) {
+    let url = this.baseurl;
 
-
+    if (id) {
+      url += "?parentId=" + id;
+    }
+    
+    return this.httpClient.post(url, files);
+  }
 }

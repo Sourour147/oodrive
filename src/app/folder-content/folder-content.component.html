@@ -1,37 +1,35 @@
 <div class="clearfix mb-5">
   <button class="btn btn-primary float-right"(click)="open(mymodal)">Add</button>
-  <button class="btn btn-primary float-left"(click)="open(mymodal)">Add File</button>
-  
 </div>
 
 <ul class="list-group">
     <li class="list-group-item" *ngFor="let item of items">
-      {{item.name}}
-    <div class="d-flex justify-content-end">
-    <button type="button" class="btn btn-outline-secondary"(click)="delete(item)">Delete</button>
-    <button class="btn btn-outline-primary"(click)="open(mymodal,item)">Edit</button>
-  </div>
-
-    <!-- ModalEdit -->
-    <ng-template #mymodal let-modal>
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">Edit </h4>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-          <span aria-hidden="true">×</span>
-        </button>
+      <a [routerLink]="['/', item.id]">{{item.name}}</a>        
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-outline-secondary"(click)="delete(item)">Delete</button>
+        <button class="btn btn-outline-primary"(click)="open(editmodal,item)">Edit</button>
       </div>
-      <div class="modal-body">
-       <form #editForm="ngForm" (ngSubmit)="rename(editForm)">
+    </li>
+</ul>
+
+<!-- ModalEdit -->
+<ng-template #editmodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #editForm="ngForm" (ngSubmit)="rename(editForm)">
       <div class="form-group">
         <label for="name">New name</label>
         <input type="text" name="name" ngModel #name="ngModel" class="form-control" required>
       </div>
-        <button class="btn btn-success">Edit</button>
-        </form>
-      </div>
-    </ng-template>
-    </li>
-</ul>
+      <button class="btn btn-success">Edit</button>
+    </form>
+  </div>
+</ng-template>
 
 <!-- ModalAddFolder -->
 <ng-template #mymodal let-modal>
@@ -49,6 +47,15 @@
       </div>
       <button class="btn btn-success">Add Folder</button>
     </form>
+
+    <div class="mt-5">
+      <ngx-dropzone (change)="onSelect($event)">
+          <ngx-dropzone-label>Drop files here.</ngx-dropzone-label>
+          <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onRemove(f)">
+            <ngx-dropzone-label>{{ f.name }} ({{ f.type }})</ngx-dropzone-label>
+          </ngx-dropzone-preview>
+      </ngx-dropzone>
+    </div>
   </div>
 </ng-template>
 
