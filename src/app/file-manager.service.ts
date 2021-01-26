@@ -5,7 +5,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class FileManagerService {
-
   baseurl = 'http://localhost:4401/api/items';
 
   constructor(private httpClient: HttpClient) { }
@@ -37,6 +36,9 @@ export class FileManagerService {
   edit(id: string, data: any) {
     return this.httpClient.patch(`${this.baseurl}/${id}`, data);
   }
+  download(id: string) {
+    return this.httpClient.get(`${this.baseurl}/${id}`, {responseType: 'blob'});
+  }
 
   upload(files: any, id?:any) {
     let url = this.baseurl;
@@ -46,5 +48,11 @@ export class FileManagerService {
     }
     
     return this.httpClient.post(url, files);
+  }
+ 
+  move(id:any, data: any) {
+    let url = this.baseurl + "/" + id;
+    
+    return this.httpClient.patch(url, data);
   }
 }

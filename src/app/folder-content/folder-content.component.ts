@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import * as fileSaver from 'file-saver';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { FileManagerService } from '../file-manager.service';
+
 
 
 @Component({
@@ -17,14 +19,15 @@ export class FolderContentComponent implements OnInit {
   @Output() folderDeleted = new EventEmitter();
   @Output() updated = new EventEmitter();
   @Output() addFile = new EventEmitter();
+  @Output() moved = new EventEmitter();
   closeResult: string;
   files: File[] = [];
+  listOfFolders = [];
 
   constructor(private modalService: NgbModal, private fileManagerService: FileManagerService,  private route: Router) { }
 
   ngOnInit() {
-    
-		
+    this.listOfFolders = this.getListOfFolders();
   }
 
   createFolder(form: any) {
@@ -94,15 +97,44 @@ export class FolderContentComponent implements OnInit {
 
     // formData.append('parentId', this.currentFolder);
 
-    this.fileManagerService.upload(formData, this.folderId).subscribe((response: any) => {
+      this.fileManagerService.upload(formData, this.folderId).subscribe((response: any) => {
       console.log('sent', response);
-  this.addFile.emit(response.items);
-        this.files = [];
-      
+      this.addFile.emit(response.items);
+      this.files = [];      
     });
   }
 
   onRemove(event: any) {
     this.files.splice(this.files.indexOf(event), 1);
+  }
+
+  result(res: any) {
+    return new Blob([res], {type: 'image/jpeg'});
+  }
+
+  download(item:any) {
+    
+    this.fileManagerService.download(item.id).subscribe(
+      (response: any) => {
+        if (response) {
+          fileSaver.saveAs(this.result(response), item.name);
+        }
+      }
+    )
+  }
+  
+  moveToFolder(form: any) {
+    this.fileManagerService.move(this.dataItem.id, {parentId: form.value.location}).subscribe(
+      (response: any) => {
+        this.moved.emit(response.id);
+      }
+    );
+  }
+  
+
+  getListOfFolders() {
+    if(this.items) return this.items.filter((item: any) => item.folder);
+
+    return [];
   }
 }

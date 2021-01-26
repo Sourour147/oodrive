@@ -1,13 +1,19 @@
 <div class="clearfix mb-5">
   <button class="btn btn-primary float-right"(click)="open(mymodal)">Add</button>
 </div>
-
 <ul class="list-group">
     <li class="list-group-item" *ngFor="let item of items">
-      <a [routerLink]="['/', item.id]">{{item.name}}</a>        
+      <span class="logo">
+        <i class="bi bi-folder-fill" *ngIf="item.folder"></i>
+        <i class="bi bi-files" *ngIf="!item.folder"></i>
+    </span>
+    <a *ngIf="!item.folder">{{item.name}}</a>
+      <a  *ngIf="item.folder" [routerLink]="['/', item.id]">{{item.name}}</a>        
       <div class="d-flex justify-content-end">
+        <button type="button" *ngIf="!item.folder" class="btn btn-outline-success"(click)="download(item)">Download</button>
         <button type="button" class="btn btn-outline-secondary"(click)="delete(item)">Delete</button>
         <button class="btn btn-outline-primary"(click)="open(editmodal,item)">Edit</button>
+        <button class="btn btn-outline-warning"(click)="open(movemodal,item)">Move</button>
       </div>
     </li>
 </ul>
@@ -59,7 +65,23 @@
   </div>
 </ng-template>
 
-
-    
-  
-
+<!-- ModalMove -->
+<ng-template #movemodal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Edit </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #moveForm="ngForm" (ngSubmit)="moveToFolder(moveForm)">
+      <div class="form-group">
+        <label for="name">New location</label>
+        <select name="location" ngModel #location="ngModel" class="form-control" required>
+          <option [value]="folder.id" *ngFor="let folder of getListOfFolders()">{{folder.name}}</option>
+        </select>
+      </div>
+      <button class="btn btn-success">Edit</button>
+    </form>
+  </div>
+</ng-template>

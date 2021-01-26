@@ -46,11 +46,16 @@ export class FileManagerComponent implements OnInit {
     this.items[index] = $event;
      }
      
-     
-     handleaddFile(item: any) {
-      const newArray = [...this.items, ...item];
-      this.items = newArray;
-      this.getFolderContent();
+  handleaddFile(item: any) {
+    const newArray = [...this.items, ...item];
+    this.items = newArray;
+    this.getFolderContent();
      }
+
+ handlemoveItem($event:any){
+    const index = this.items.findIndex((item:any) => item.id == $event);
+    this.items.splice(index, 1);
+    this.getFolderContent();
+    }
     }
  
